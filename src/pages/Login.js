@@ -19,9 +19,8 @@ class Login extends React.Component {
     validateBtn = () => {
       const { email, name } = this.state;
       let validation = true;
-      if (email.length === 0 && name.length === 0) {
+      if (email.length !== 0 && name.length !== 0) {
         validation = false;
-        return validation;
       }
       return validation;
     }
