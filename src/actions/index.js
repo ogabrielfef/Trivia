@@ -1,6 +1,10 @@
-export const ADD_NAME = 'ADD_NAME';
+// import md5 from 'crypto-js/md5';
 
-export const addName = (name) => ({
-  type: ADD_NAME,
-  payload: name,
+export const TRANSFORM_EMAIL = 'TRANSFORM_EMAIL';
+export const transformEmail = (gravatarEmail, name) => ({
+  type: TRANSFORM_EMAIL,
+  payload: {
+    gravatarEmail,
+    name,
+  },
 });

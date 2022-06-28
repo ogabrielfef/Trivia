@@ -1,4 +1,4 @@
-import { ADD_NAME } from '../actions';
+import { TRANSFORM_EMAIL } from '../actions';
 
 const INITIAL_STATE = {
 
@@ -11,10 +11,11 @@ const INITIAL_STATE = {
 
 const player = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-  case ADD_NAME:
+  case TRANSFORM_EMAIL:
     return {
       ...state,
-      name: action.payload,
+      gravatarEmail: action.payload.gravatarEmail,
+      name: action.payload.name,
     };
   default:
     return state;

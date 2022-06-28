@@ -1,15 +1,22 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import PropTypes from 'prop-types';
-// import { addName } from '../actions';
+import PropTypes from 'prop-types';
 
 class Login extends React.Component {
     state = {
       email: '',
       name: '',
-    //   isButtonDisabled: true,
     }
+
+    // onclick para fazer a requisição à API
+    handleClick = async () => {
+      const { history } = this.props;
+      const apiData = await fetch('https://opentdb.com/api_token.php?command=request');
+      const response = await apiData.json();
+      const { token } = response;
+      localStorage.setItem('token', token);
+      history.push('/game');
+    };
 
     // handleChange para ver os inputs
     handleChange = ({ target: { value, name } }) => {
@@ -49,6 +56,7 @@ class Login extends React.Component {
             type="button"
             data-testid="btn-play"
             disabled={ this.validateBtn() }
+            onClick={ this.handleClick }
           >
             Play
           </button>
@@ -56,5 +64,21 @@ class Login extends React.Component {
       );
     }
 }
+
+// const mapDispatchToProps = (dispatch) => ({
+//   fetchToken: (email, name) => { dispatch(fetchTriviaUrlThunk(email, name)); },
+// });
+
+// const mapStateToProps = (state) => ({
+//   gravatarEmail: state.player.gravatarEmail,
+// });
+
+Login.propTypes = {
+//   fetchToken: PropTypes.func.isRequired,
+//   gravatarEmail: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default connect()(Login);
