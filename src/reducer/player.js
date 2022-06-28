@@ -1,9 +1,11 @@
+import { ADD_NAME } from '../actions';
+
 const INITIAL_STATE = {
 
-  name: nome - da - pessoa,
-  assertions: número - de - acertos,
-  score: pontuação,
-  gravatarEmail: email - da - pessoa,
+  name: '',
+  assertions: '',
+  score: '',
+  gravatarEmail: '',
 
 };
 
