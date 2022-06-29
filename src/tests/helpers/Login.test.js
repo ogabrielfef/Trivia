@@ -1,18 +1,47 @@
 // import Login from "../../pages/Login";
 import App from "../../App";
 import React from "react";
-import { MemoryRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { render, screen } from "@testing-library/react";
+import { createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import rootReducer from "../../reducer";
+import { legacy_createStore as createStore } from 'redux';
+
+
 describe(
     'Testa o componente Login', () => {
-        
+      test(
+        'Ao renderizar a tela os Inputs são renderizados', () => {
+          const history = createMemoryHistory();
+          const store = createStore(rootReducer);
+            render(
+              <Provider store= { store }>
+                <Router history={ history }>
+                  <App />
+                </Router>
+              </Provider>,
+            );
+            
+            const name = screen.getByPlaceholderText('name');
+            const email = screen.getByPlaceholderText('email');
+
+            expect(name).toBeInTheDocument();
+            expect(email).toBeInTheDocument();
+        }
+      );
         test(
             'Ao renderizar a tela os Botões são renderizados', () => {
+              const history = createMemoryHistory();
+              const store = createStore(rootReducer);
                 render(
-                    <MemoryRouter >
+                  <Provider store= { store }>
+                    <Router history={ history }>
                       <App />
-                    </MemoryRouter>,
+                    </Router>
+                  </Provider>,
                 );
+                
                 const play = screen.getByRole('button', {
                     name: /play/i
                   })
@@ -24,5 +53,7 @@ describe(
                 expect(settings).toBeInTheDocument();
             }
         );
+
+     
     }
 )
