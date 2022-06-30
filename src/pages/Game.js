@@ -92,7 +92,7 @@ class Game extends React.Component {
                 {' '}
               </p>
 
-              <div style={ { display: 'flex' } } data-testid="answer-options">
+              <div data-testid="answer-options">
                 {
                   this.randomizeQuestions(responseAPI[indexQuestion].incorrect_answers,
                     responseAPI[indexQuestion].correct_answer)
