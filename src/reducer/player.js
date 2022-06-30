@@ -4,6 +4,7 @@ import {
   POINT_SCORE,
   DISABLE_OPTIONS_TRUE,
   DISABLE_OPTIONS_FALSE,
+  RESET_SCORE,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -44,6 +45,11 @@ const player = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       disableOptions: false,
+    };
+  case RESET_SCORE:
+    return {
+      ...state,
+      score: 0,
     };
   default:
     return state;
