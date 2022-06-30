@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const MINIMUM_SCORE = 3;
 
@@ -40,6 +41,15 @@ class Feedback extends React.Component {
             <p data-testid="feedback-text">Well Done!</p>
           ) : <p data-testid="feedback-text">Could be better...</p>
         }
+        <Link to="/">
+          <button
+            type="button"
+            data-testid="btn-play-again"
+          >
+            Play Again
+
+          </button>
+        </Link>
 
       </header>
     );
