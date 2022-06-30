@@ -7,12 +7,33 @@ class Game extends React.Component {
     responseAPI: [],
     indexQuestion: 0,
     responseCode: 0,
+    stylesAns: {
+      correctAns: {
+        border: '3px solid black',
+      },
+      wrongAns: {
+        border: '3px solid black',
+      },
+    },
   }
 
   componentDidMount() {
     const TWO_SECONDS = 2000;
     this.triviaApiRequest();
     setTimeout(this.tokenHasExpired, TWO_SECONDS);
+  }
+
+  handleAnswerClick = () => {
+    this.setState({
+      stylesAns: {
+        correctAns: {
+          border: '3px solid rgb(6, 240, 15)',
+        },
+        wrongAns: {
+          border: '3px solid red',
+        },
+      },
+    });
   }
 
   triviaApiRequest = async () => {
@@ -56,7 +77,7 @@ class Game extends React.Component {
 
   render() {
     const { gravatarEmail } = this.props;
-    const { responseAPI, indexQuestion } = this.state;
+    const { responseAPI, indexQuestion, stylesAns } = this.state;
     return (
       <>
         <header>
@@ -91,18 +112,20 @@ class Game extends React.Component {
                 {responseAPI[indexQuestion].question}
                 {' '}
               </p>
-
               <div data-testid="answer-options">
                 {
                   this.randomizeQuestions(responseAPI[indexQuestion].incorrect_answers,
                     responseAPI[indexQuestion].correct_answer)
-                    .map((item, index) => (
+                    .map((item) => (
 
                       item === responseAPI[indexQuestion].correct_answer ? (
                         <button
-                          key={ index }
+                          key="correct-ans"
+                          style={ stylesAns.correctAns }
+                          className="button-correct-ans"
                           data-testid="correct-answer"
                           type="button"
+                          onClick={ this.handleAnswerClick }
                         >
                           {responseAPI[indexQuestion].correct_answer}
                         </button>
@@ -110,7 +133,10 @@ class Game extends React.Component {
                         <button
                           type="button"
                           key={ item.index }
+                          style={ stylesAns.wrongAns }
+                          className="button-correct-ans"
                           data-testid={ `wrong-answer-${item.index}` }
+                          onClick={ this.handleAnswerClick }
                         >
                           {item.answer}
                         </button>
