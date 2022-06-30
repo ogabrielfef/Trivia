@@ -2,10 +2,42 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { resetScore } from '../actions';
 
 const MINIMUM_SCORE = 3;
 
 class Feedback extends React.Component {
+  componentDidMount() {
+    this.saveScore();
+  }
+
+  saveScore = () => {
+    const { score, gravatar } = this.props;
+    const nameSaved = localStorage.getItem('name');
+    const ranking = [{
+      name: nameSaved,
+      score,
+      picture: gravatar,
+    }];
+    if (!localStorage.getItem('ranking')) {
+      localStorage.setItem('ranking', JSON.stringify(ranking));
+    } else {
+      const savedScores = JSON.parse(localStorage.getItem('ranking'));
+      const newRank = {
+        name: nameSaved,
+        score,
+        picture: gravatar,
+      };
+      const savedArray = [...savedScores, newRank];
+      localStorage.setItem('ranking', JSON.stringify(savedArray));
+    }
+  }
+
+  resetScore = () => {
+    const { resetScoreButton } = this.props;
+    resetScoreButton();
+  }
+
   render() {
     const { score, gravatar, assertions } = this.props;
     return (
@@ -45,6 +77,7 @@ class Feedback extends React.Component {
           <button
             type="button"
             data-testid="btn-play-again"
+            onClick={ this.resetScore }
           >
             Play Again
 
@@ -72,10 +105,15 @@ const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
 });
 
+const mapDispatchToProps = (dispatch) => ({
+  resetScoreButton: () => { dispatch(resetScore()); },
+});
+
 Feedback.propTypes = {
   score: PropTypes.number.isRequired,
   assertions: PropTypes.number.isRequired,
   gravatar: PropTypes.string.isRequired,
+  resetScoreButton: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, null)(Feedback);
+export default connect(mapStateToProps, mapDispatchToProps)(Feedback);

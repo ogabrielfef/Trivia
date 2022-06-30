@@ -37,3 +37,9 @@ export const DISABLE_OPTIONS_FALSE = 'DISABLE_OPTIONS_FALSE';
 export const disableOptionsFalse = () => ({
   type: DISABLE_OPTIONS_FALSE,
 });
+
+export const RESET_SCORE = 'RESET_SCORE';
+
+export const resetScore = () => ({
+  type: RESET_SCORE,
+});
