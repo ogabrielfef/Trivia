@@ -4,50 +4,59 @@ import { connect } from 'react-redux';
 
 class Game extends React.Component {
   state = {
-    responseAPI: '',
+    responseAPI: [],
+    indexQuestion: 0,
+    responseCode: 0,
   }
 
   componentDidMount() {
-    const ONE_MINUTE = 60000;
+    const TWO_SECONDS = 2000;
     this.triviaApiRequest();
-    setTimeout(this.tokenHasExpired, ONE_MINUTE);
+    setTimeout(this.tokenHasExpired, TWO_SECONDS);
   }
 
   triviaApiRequest = async () => {
     const token = localStorage.getItem('token');
     const apiData = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const response = await apiData.json();
-    this.setState({ responseAPI: response });
-    console.log(response);
-    return response;
+    return this.setState({
+      responseAPI: response.results,
+      responseCode: response.response_code,
+    });
   };
 
   // caso token seja inválido
   tokenHasExpired = () => {
-    const { responseAPI } = this.state;
+    const { responseCode } = this.state;
     const { history } = this.props;
-    const logOut = {
-      response_code: 3,
-      results: [],
-    };
-    if (responseAPI === logOut) {
+    if (responseCode !== 0) {
       localStorage.removeItem('token');
       localStorage.removeItem('name');
       history.push('/');
     }
   }
 
-  // // handle click respostas
-  // handleClick = () => {
-  //   const { responseAPI } = this.state;
-  //   responseAPI.map((array, index) => {
-
-  //   });
-  // }
+  randomizeQuestions = (wrong, right) => {
+    const newWrong = [];
+    wrong.map((item, index) => {
+      const obj = {
+        answer: item,
+        index,
+      };
+      return newWrong.push(obj);
+    });
+    const arrayToSort = [right, ...newWrong];
+    // Fonte: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    const shuffled = arrayToSort
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+    return shuffled;
+  }
 
   render() {
     const { gravatarEmail } = this.props;
-    const { responseAPI } = this.state;
+    const { responseAPI, indexQuestion } = this.state;
     return (
       <>
         <header>
@@ -70,7 +79,48 @@ class Game extends React.Component {
           </p>
         </header>
         <section>
-          { responseAPI.results.map((array, index) => (<h2 data-testid="question-text" key={ index }>{ array.category }</h2>))}
+          {responseAPI.length > 0 && (
+            <div>
+              <h1 data-testid="question-category">
+                {' '}
+                {responseAPI[indexQuestion].category}
+                {' '}
+              </h1>
+              <p data-testid="question-text">
+                {' '}
+                {responseAPI[indexQuestion].question}
+                {' '}
+              </p>
+
+              <div style={ { display: 'flex' } } data-testid="answer-options">
+                {
+                  this.randomizeQuestions(responseAPI[indexQuestion].incorrect_answers,
+                    responseAPI[indexQuestion].correct_answer)
+                    .map((item, index) => (
+
+                      item === responseAPI[indexQuestion].correct_answer ? (
+                        <button
+                          key={ index }
+                          data-testid="correct-answer"
+                          type="button"
+                        >
+                          {responseAPI[indexQuestion].correct_answer}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          key={ item.index }
+                          data-testid={ `wrong-answer-${item.index}` }
+                        >
+                          {item.answer}
+                        </button>
+                      )
+
+                    ))
+                }
+              </div>
+            </div>
+          )}
         </section>
       </>
     );
