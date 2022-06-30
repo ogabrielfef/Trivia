@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Timer from '../components/Timer';
+import { nextQuestionAction, pointScore, disableOptionsFalse } from '../actions/index';
+
+const FOUR = 4;
+const DEFAULT_BORDER = '3px solid black';
 
 class Game extends React.Component {
   state = {
@@ -9,10 +14,10 @@ class Game extends React.Component {
     responseCode: 0,
     stylesAns: {
       correctAns: {
-        border: '3px solid black',
+        border: DEFAULT_BORDER,
       },
       wrongAns: {
-        border: '3px solid black',
+        border: DEFAULT_BORDER,
       },
     },
   }
@@ -23,7 +28,8 @@ class Game extends React.Component {
     setTimeout(this.tokenHasExpired, TWO_SECONDS);
   }
 
-  handleAnswerClick = () => {
+  handleAnswerClick = ({ target: { name } }) => {
+    const { nextQuest, countPoint } = this.props;
     this.setState({
       stylesAns: {
         correctAns: {
@@ -34,6 +40,10 @@ class Game extends React.Component {
         },
       },
     });
+    nextQuest();
+    if (name === 'correct-ans') {
+      countPoint();
+    }
   }
 
   triviaApiRequest = async () => {
@@ -75,8 +85,24 @@ class Game extends React.Component {
     return shuffled;
   }
 
+  handleNextClick = () => {
+    const { disableButtonFalse } = this.props;
+    this.setState((prevState) => ({ indexQuestion: prevState.indexQuestion + 1 }));
+    disableButtonFalse();
+    this.setState({
+      stylesAns: {
+        correctAns: {
+          border: DEFAULT_BORDER,
+        },
+        wrongAns: {
+          border: DEFAULT_BORDER,
+        },
+      },
+    });
+  }
+
   render() {
-    const { gravatarEmail } = this.props;
+    const { gravatarEmail, nextQuestion, placar, disableButton, history } = this.props;
     const { responseAPI, indexQuestion, stylesAns } = this.state;
     return (
       <>
@@ -89,30 +115,28 @@ class Game extends React.Component {
           <p
             data-testid="header-player-name"
           >
-            { localStorage.getItem('name') }
+            {localStorage.getItem('name')}
 
           </p>
           <p
             data-testid="header-score"
           >
-            Placar: 0
-
+            {placar}
           </p>
         </header>
         <section>
           {responseAPI.length > 0 && (
-            <div>
+
+            <div className="question-info">
               <h1 data-testid="question-category">
-                {' '}
                 {responseAPI[indexQuestion].category}
-                {' '}
               </h1>
+
               <p data-testid="question-text">
-                {' '}
                 {responseAPI[indexQuestion].question}
-                {' '}
               </p>
               <div data-testid="answer-options">
+                <Timer />
                 {
                   this.randomizeQuestions(responseAPI[indexQuestion].incorrect_answers,
                     responseAPI[indexQuestion].correct_answer)
@@ -125,6 +149,8 @@ class Game extends React.Component {
                           className="button-correct-ans"
                           data-testid="correct-answer"
                           type="button"
+                          name="correct-ans"
+                          disabled={ disableButton }
                           onClick={ this.handleAnswerClick }
                         >
                           {responseAPI[indexQuestion].correct_answer}
@@ -134,6 +160,7 @@ class Game extends React.Component {
                           type="button"
                           key={ item.index }
                           style={ stylesAns.wrongAns }
+                          disabled={ disableButton }
                           className="button-correct-ans"
                           data-testid={ `wrong-answer-${item.index}` }
                           onClick={ this.handleAnswerClick }
@@ -141,8 +168,19 @@ class Game extends React.Component {
                           {item.answer}
                         </button>
                       )
-
                     ))
+                }
+                {
+                  nextQuestion ? (
+                    <button
+                      data-testid="btn-next"
+                      type="button"
+                      onClick={ indexQuestion === FOUR ? history.push('/feedback')
+                        : this.handleNextClick }
+                    >
+                      Próxima
+                    </button>
+                  ) : ''
                 }
               </div>
             </div>
@@ -156,6 +194,15 @@ class Game extends React.Component {
 const mapStateToProps = (state) => ({
   gravatarEmail: state.player.gravatarEmail,
   name: state.player.name,
+  nextQuestion: state.player.nextQuestion,
+  placar: state.player.score,
+  disableButton: state.player.disableOptions,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  nextQuest: () => { dispatch(nextQuestionAction()); },
+  countPoint: () => { dispatch(pointScore()); },
+  disableButtonFalse: () => { dispatch(disableOptionsFalse()); },
 });
 
 Game.propTypes = {
@@ -164,6 +211,12 @@ Game.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  nextQuestion: PropTypes.bool.isRequired,
+  nextQuest: PropTypes.func.isRequired,
+  countPoint: PropTypes.func.isRequired,
+  placar: PropTypes.number.isRequired,
+  disableButton: PropTypes.bool.isRequired,
+  disableButtonFalse: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps)(Game);
+export default connect(mapStateToProps, mapDispatchToProps)(Game);

@@ -13,3 +13,27 @@ export const fetchEmailGravatarThunk = (gravatarEmail, name) => async (dispatch)
   const emailGravatar = md5(gravatarEmail).toString();
   dispatch(transformEmail(emailGravatar, name));
 };
+
+export const NEXT_QUESTION = 'NEXT_QUESTION';
+
+export const nextQuestionAction = () => ({
+  type: NEXT_QUESTION,
+});
+
+export const POINT_SCORE = 'POINT_SCORE';
+
+export const pointScore = () => ({
+  type: POINT_SCORE,
+});
+
+export const DISABLE_OPTIONS_TRUE = 'DISABLE_OPTIONS_TRUE';
+
+export const disableOptionsTrue = () => ({
+  type: DISABLE_OPTIONS_TRUE,
+});
+
+export const DISABLE_OPTIONS_FALSE = 'DISABLE_OPTIONS_FALSE';
+
+export const disableOptionsFalse = () => ({
+  type: DISABLE_OPTIONS_FALSE,
+});
