@@ -9,7 +9,7 @@ import {
 const INITIAL_STATE = {
 
   name: '',
-  assertions: '',
+  assertions: 0,
   score: 0,
   gravatarEmail: '',
   nextQuestion: false,
