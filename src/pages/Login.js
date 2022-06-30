@@ -17,8 +17,9 @@ class Login extends React.Component {
       const apiData = await fetch('https://opentdb.com/api_token.php?command=request');
       const response = await apiData.json();
       const { token } = response;
-      fetchToken(email, name);
+      await fetchToken(email, name);
       localStorage.setItem('token', token);
+      localStorage.setItem('name', name);
       history.push('/game');
     };
 
@@ -89,7 +90,7 @@ const mapStateToProps = (state) => ({
 
 Login.propTypes = {
   fetchToken: PropTypes.func.isRequired,
-  //   gravatarEmail: PropTypes.string.isRequired,
+  // nameRedux: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
