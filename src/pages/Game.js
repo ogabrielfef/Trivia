@@ -86,7 +86,11 @@ class Game extends React.Component {
   }
 
   handleNextClick = () => {
-    const { disableButtonFalse } = this.props;
+    const { disableButtonFalse, history } = this.props;
+    const { indexQuestion } = this.state;
+    if (indexQuestion === FOUR) {
+      history.push('/feedback');
+    }
     this.setState((prevState) => ({ indexQuestion: prevState.indexQuestion + 1 }));
     disableButtonFalse();
     this.setState({
@@ -102,7 +106,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { gravatarEmail, nextQuestion, placar, disableButton, history } = this.props;
+    const { gravatarEmail, nextQuestion, placar, disableButton } = this.props;
     const { responseAPI, indexQuestion, stylesAns } = this.state;
     return (
       <>
@@ -175,8 +179,7 @@ class Game extends React.Component {
                     <button
                       data-testid="btn-next"
                       type="button"
-                      onClick={ indexQuestion === FOUR ? history.push('/feedback')
-                        : this.handleNextClick }
+                      onClick={ this.handleNextClick }
                     >
                       Próxima
                     </button>

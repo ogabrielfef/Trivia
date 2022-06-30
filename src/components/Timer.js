@@ -15,6 +15,10 @@ class Timer extends React.Component {
     this.timer();
   }
 
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
   timer = () => {
     const { disableButtonAction, nextQuest } = this.props;
     this.intervalId = setInterval(() => {
