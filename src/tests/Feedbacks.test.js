@@ -1,14 +1,14 @@
 // import Login from "../../pages/Login";
-import App from "../../App";
+import App from "../App";
 import React from "react";
 import { Router } from 'react-router-dom';
 import { render, screen } from "@testing-library/react";
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import rootReducer from "../../reducer";
+import rootReducer from "../reducer";
 import { legacy_createStore as createStore } from 'redux';
 import userEvent from "@testing-library/user-event";
-import Feedback from "../../pages/Feedback";
+import Feedback from "../pages/Feedback";
 
 
 describe(
