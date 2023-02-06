@@ -16,9 +16,9 @@ Em caso de dicas, observações ou ajuda você pode entrar em contato comigo por
 <br>
 
 
-<!-- <p align="center">
-  <img alt="projeto DevLinks" src="./assets/Capa.jpg" width="100%">
-</p> -->
+<p align="center">
+  <img alt="projeto DevLinks" src="https://user-images.githubusercontent.com/95686401/184922718-1d6e0e83-3940-4f27-9fdf-47b57ab41d07.gif" width="100%">
+</p> 
 
 ## 🚀 Tecnologias
 
